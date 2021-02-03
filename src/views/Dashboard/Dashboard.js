@@ -28,21 +28,37 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import { useState, useEffect } from 'react';  
+import axios from 'axios'
 
 import { bugs, website, server } from "variables/general.js";
 
 import {
   dailySalesChart,
   emailsSubscriptionChart,
-  completedTasksChart
+  completedTasksChart, 
+  stats
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 const useStyles = makeStyles(styles);
 
+
 export default function Dashboard() {
   const classes = useStyles();
+  const [data, setData] = useState({ hits: [] });
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(
+        'https://choicebased-bot-demo.herokuapp.com/options',
+      );
+ 
+      setData(result.data);
+    };
+ 
+    fetchData();
+  }, []);
   return (
     <div>
       <GridContainer>
@@ -54,13 +70,13 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Total No. of Texts</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                2200 <small></small>
               </h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
               <Update />
-                Updated just now
+                Updated 4 hours ago
               </div>
             </CardFooter>
           </Card>
@@ -72,7 +88,7 @@ export default function Dashboard() {
                 <Icon>chat</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Total No. of Conversations</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <h3 className={classes.cardTitle}>10</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -89,7 +105,7 @@ export default function Dashboard() {
                 <Icon>supervisor_account</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Engaged Customers</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <h3 className={classes.cardTitle}>10/15</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -103,10 +119,10 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <Accessibility />
+                <Icon>thumb_up</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Page Likes</p>
+              <h3 className={classes.cardTitle}>15</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -135,12 +151,12 @@ export default function Dashboard() {
                 <span className={classes.successText}>
                   <ArrowUpward className={classes.upArrowCardCategory} /> 55%
                 </span>{" "}
-                increase in today sales.
+                
               </p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
+                <AccessTime /> updated 6 hours ago
               </div>
             </CardFooter>
           </Card>
@@ -185,33 +201,34 @@ export default function Dashboard() {
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> Updated just now
+                <AccessTime /> Updated 6 hours ago
               </div>
             </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={6}>
-          <Card>
-            <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>Engaged Customer Stats</h4>
-              <p className={classes.cardCategoryWhite}>
-                New employees on 15th September, 2016
-              </p>
+        <GridItem xs={12} sm={12} md={12}>
+        <Card chart>
+            <CardHeader color="primary">
+              <ChartistGraph
+                className="ct-chart"
+                data={stats.data}
+                type="Bar"
+                options={['INDVIDIDUAL', 'CORPORATES', 'COMPLAINT', 'PREPAID', 'POSTPAID']}
+                responsiveOptions={['INDVIDIDUAL', 'CORPORATES', 'COMPLAINT', 'PREPAID', 'POSTPAID']}
+                listener={stats.animation}
+              />
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["ID", "Name", "Salary", "Country"]}
-                tableData={[
-                  ["1", "Dakota Rice", "$36,738", "Niger"],
-                  ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                  ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                  ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                ]}
-              />
+              <h4 className={classes.cardTitle}>Label Hits</h4>
+              <p className={classes.cardCategory}>Last Campaign Performance</p>
             </CardBody>
+            <CardFooter chart>
+              <div className={classes.stats}>
+                <AccessTime /> Updated just now
+              </div>
+            </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
